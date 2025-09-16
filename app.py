@@ -19,6 +19,7 @@ class User(db.Model):
     age = db.Column(db.Integer, nullable=False)
     gender = db.Column(db.String(20), nullable=False)
     live_loc = db.Column(db.String(200), nullable=False)
+    phone = db.Column(db.String(15), nullable=True)
 
     def __repr__(self) -> str:
         return f"{self.name} - {self.blood_grp} - {self.live_loc}"
@@ -68,6 +69,7 @@ def signup():
     age = request.form['age']
     gender = request.form['gender']
     live_loc = request.form['live_loc']
+    phone = request.form['phone']
 
     if User.query.filter_by(email=email).first():
         flash("Email already registered!", "danger")
@@ -75,7 +77,7 @@ def signup():
 
     new_user = User(name=name, email=email, password=password,
                     Address=Address, blood_grp=blood_grp,
-                    age=age, gender=gender, live_loc=live_loc)
+                    age=age, gender=gender, live_loc=live_loc , phone=phone)
     db.session.add(new_user)
     db.session.commit()
     flash("Signup successful! Please login.", "success")
@@ -87,7 +89,7 @@ def home():
         flash("Please login first!", "warning")
         return redirect(url_for('login'))
     user = User.query.get(session['user_id'])
-    return f"Welcome {user.name}! Your blood group is {user.blood_grp}. You live in {user.live_loc}. You are {user.age} years old and you are a {user.gender}. You live at {user.Address}.Your User ID is {user.id}."
+    return f"Welcome {user.name}! Your blood group is {user.blood_grp}. You live in {user.live_loc}. You are {user.age} years old and you are a {user.gender}. You live at {user.Address}.Your User ID is {user.id}. Your phone number is {user.phone}."
 
 @app.route('/logout')
 def logout():
