@@ -151,7 +151,7 @@ def sosrequest():
         msg_text = f"🚨 SOS Alert: {user.blood_grp} blood needed!\n" \
            f"Patient: {user.name}, Age {user.age}\n" \
            f"Location: {user.live_loc}\n" \
-           f"https://prodigycodersigniteit.onrender.com/accept/{new_req.req_id}"
+           f"https://prodigycodersigniteit-1.onrender.com//accept/{new_req.req_id}"
 
 
         message = client.messages.create(
