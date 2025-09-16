@@ -37,10 +37,10 @@ class SOSRequest(db.Model):
     status = db.Column(db.String(50), default="Pending")   
 
 # ROUTES
-@app.route('/')
+@app.route('/', methods=['GET','POST'])
 def index():
     return render_template('index.html')
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET','POST'])
 def login():
     if request.method == 'POST':
         email = request.form['email']
@@ -50,7 +50,7 @@ def login():
         if user and check_password_hash(user.password, password):
             session['user_id'] = user.id
             flash("Login successful!", "success")
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('home'))
         else:
             flash("Invalid credentials!", "danger")
             return redirect(url_for('login'))
@@ -79,15 +79,15 @@ def signup():
     db.session.add(new_user)
     db.session.commit()
     flash("Signup successful! Please login.", "success")
-    return redirect(url_for('info'))
+    return redirect(url_for('home'))
 
-@app.route('/dashboard')
-def dashboard():
+@app.route('/home')
+def home():
     if 'user_id' not in session:
         flash("Please login first!", "warning")
         return redirect(url_for('login'))
     user = User.query.get(session['user_id'])
-    return f"Welcome {user.name}! Your blood group is {user.blood_grp}."
+    return f"Welcome {user.name}! Your blood group is {user.blood_grp}. You live in {user.live_loc}. You are {user.age} years old and you are a {user.gender}. You live at {user.Address}.Your User ID is {user.id}."
 
 @app.route('/logout')
 def logout():

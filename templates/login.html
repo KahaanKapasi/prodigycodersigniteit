@@ -1,294 +1,398 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LifeLink - Login</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      display: flex;
-      height: 100vh;
-      overflow: hidden;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeLink - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
 
-    /* Left side - Welcome Section */
-    .left-section {
-      flex: 1;
-      background: linear-gradient(135deg, rgba(229,57,53,0.9), rgba(183,28,28,0.9)),
-                  url('https://images.unsplash.com/photo-1588776814546-ec89d6e6b18e?auto=format&fit=crop&w=1600&q=80');
-      background-size: cover;
-      background-position: center;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 60px;
-      animation: slideInLeft 1s ease;
-      position: relative;
-      overflow: hidden;
-      z-index: 1;
-    }
+        /* Left side - Welcome Section */
+        .left-section {
+            flex: 1;
+            background: linear-gradient(135deg, rgba(229, 57, 53, 0.9), rgba(183, 28, 28, 0.9)),
+                url('https://images.unsplash.com/photo-1588776814546-ec89d6e6b18e?auto=format&fit=crop&w=1600&q=80');
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px;
+            animation: slideInLeft 1s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
 
-    .left-section h1 {
-      font-size: 42px;
-      margin-bottom: 20px;
-      font-weight: 800;
-    }
+        .left-section h1 {
+            font-size: 42px;
+            margin-bottom: 20px;
+            font-weight: 800;
+        }
 
-    .left-section p {
-      font-size: 18px;
-      line-height: 1.6;
-      max-width: 420px;
-    }
+        .left-section p {
+            font-size: 18px;
+            line-height: 1.6;
+            max-width: 420px;
+        }
 
-    /* Blood Cells Animation */
-    .blood-cells {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 0;
-      overflow: hidden;
-    }
-    .blood-cell {
-      position: absolute;
-      border-radius: 50%;
-      background: radial-gradient(circle at 60% 40%, #ff8a80 60%, #e53935 100%);
-      opacity: 0.7;
-      animation: floatCell 8s linear infinite;
-      box-shadow: 0 2px 12px rgba(229,57,53,0.15);
-    }
-    .blood-cell.cell1 { width: 60px; height: 60px; left: 10%; top: 70%; animation-delay: 0s; }
-    .blood-cell.cell2 { width: 40px; height: 40px; left: 30%; top: 80%; animation-delay: 2s; }
-    .blood-cell.cell3 { width: 80px; height: 80px; left: 60%; top: 90%; animation-delay: 1s; }
-    .blood-cell.cell4 { width: 30px; height: 30px; left: 80%; top: 75%; animation-delay: 3s; }
-    .blood-cell.cell5 { width: 50px; height: 50px; left: 50%; top: 95%; animation-delay: 4s; }
-    .blood-cell.cell6 { width: 35px; height: 35px; left: 20%; top: 85%; animation-delay: 5s; }
+        /* Blood Cells Animation */
+        .blood-cells {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
 
-    @keyframes floatCell {
-      0% { transform: translateY(0) scale(1) rotate(0deg); }
-      60% { transform: translateY(-60vh) scale(1.1) rotate(20deg); }
-      100% { transform: translateY(-100vh) scale(1) rotate(360deg); }
-    }
+        .blood-cell {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle at 60% 40%, #ff8a80 60%, #e53935 100%);
+            opacity: 0.7;
+            animation: floatCell 8s linear infinite;
+            box-shadow: 0 2px 12px rgba(229, 57, 53, 0.15);
+        }
 
-    /* Right side - Forms */
-    .right-section {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #fff;
-      animation: slideInRight 1s ease;
-      position: relative;
-    }
+        .blood-cell.cell1 {
+            width: 60px;
+            height: 60px;
+            left: 10%;
+            top: 70%;
+            animation-delay: 0s;
+        }
 
-    .login-box {
-      width: 100%;
-      max-width: 380px;
-      padding: 40px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-      border-radius: 12px;
-      text-align: center;
-      background: #fff;
-      position: relative;
-    }
+        .blood-cell.cell2 {
+            width: 40px;
+            height: 40px;
+            left: 30%;
+            top: 80%;
+            animation-delay: 2s;
+        }
 
-    .login-box h2 {
-      color: #e53935;
-      margin-bottom: 20px;
-      font-weight: 700;
-    }
+        .blood-cell.cell3 {
+            width: 80px;
+            height: 80px;
+            left: 60%;
+            top: 90%;
+            animation-delay: 1s;
+        }
 
-    .input-group {
-      margin-bottom: 18px;
-      text-align: left;
-    }
+        .blood-cell.cell4 {
+            width: 30px;
+            height: 30px;
+            left: 80%;
+            top: 75%;
+            animation-delay: 3s;
+        }
 
-    .input-group input {
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #ddd;
-      outline: none;
-      font-size: 14px;
-      transition: 0.3s;
-    }
+        .blood-cell.cell5 {
+            width: 50px;
+            height: 50px;
+            left: 50%;
+            top: 95%;
+            animation-delay: 4s;
+        }
 
-    .input-group input:focus {
-      border-color: #e53935;
-      box-shadow: 0 0 6px rgba(229, 57, 53, 0.3);
-    }
+        .blood-cell.cell6 {
+            width: 35px;
+            height: 35px;
+            left: 20%;
+            top: 85%;
+            animation-delay: 5s;
+        }
 
-    .btn {
-      width: 100%;
-      padding: 12px;
-      background: #e53935;
-      border: none;
-      border-radius: 8px;
-      color: #fff;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.3s;
-    }
+        @keyframes floatCell {
+            0% {
+                transform: translateY(0) scale(1) rotate(0deg);
+            }
 
-    .btn:hover {
-      background: #c62828;
-    }
+            60% {
+                transform: translateY(-60vh) scale(1.1) rotate(20deg);
+            }
 
-    .extra-links {
-      margin-top: 12px;
-      font-size: 14px;
-    }
+            100% {
+                transform: translateY(-100vh) scale(1) rotate(360deg);
+            }
+        }
 
-    .extra-links a {
-      text-decoration: none;
-      color: #e53935;
-      font-weight: 500;
-      margin: 0 6px;
-      cursor: pointer;
-    }
+        /* Right side - Forms */
+        .right-section {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #fff;
+            animation: slideInRight 1s ease;
+            position: relative;
+        }
 
-    .extra-links a:hover {
-      text-decoration: underline;
-    }
+        .login-box {
+            width: 100%;
+            max-width: 420px;
+            padding: 40px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            text-align: center;
+            background: #fff;
+            position: relative;
+        }
 
-    .google-btn {
-      margin: 18px auto 0 auto;
-      background: #fff;
-      border: 1px solid #ddd;
-      color: #444;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      width: fit-content;
-    }
+        .login-box h2 {
+            color: #e53935;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
 
-    .google-btn img {
-      width: 20px;
-      height: 20px;
-    }
+        .input-group {
+            margin-bottom: 18px;
+            text-align: left;
+        }
 
-    /* Form switch animations */
-    .form-container {
-      position: absolute;
-      width: 100%;
-      top: 0;
-      left: 0;
-      opacity: 0;
-      transform: translateX(50px);
-      transition: all 0.5s ease;
-      pointer-events: none;
-    }
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            outline: none;
+            font-size: 14px;
+            transition: 0.3s;
+        }
 
-    .form-container.active {
-      opacity: 1;
-      transform: translateX(0);
-      pointer-events: auto;
-      position: relative;
-    }
+        .input-group input:focus,
+        .input-group select:focus {
+            border-color: #e53935;
+            box-shadow: 0 0 6px rgba(229, 57, 53, 0.3);
+        }
 
-    @keyframes slideInLeft {
-      from { transform: translateX(-100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #e53935;
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
 
-    @keyframes slideInRight {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-  </style>
+        .btn:hover {
+            background: #c62828;
+        }
+
+        .extra-links {
+            margin-top: 12px;
+            font-size: 14px;
+        }
+
+        .extra-links a {
+            text-decoration: none;
+            color: #e53935;
+            font-weight: 500;
+            margin: 0 6px;
+            cursor: pointer;
+        }
+
+        .extra-links a:hover {
+            text-decoration: underline;
+        }
+
+        .google-btn {
+            margin: 18px auto 0 auto;
+            background: #fff;
+            border: 1px solid #ddd;
+            color: #444;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            width: fit-content;
+        }
+
+        .google-btn img {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Form switch animations */
+        .form-container {
+            position: absolute;
+            width: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.5s ease;
+            pointer-events: none;
+        }
+
+        .form-container.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
+            position: relative;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
 </head>
+
 <body>
-  <!-- Left Welcome Section -->
-  <div class="left-section">
-    <div class="blood-cells">
-      <div class="blood-cell cell1"></div>
-      <div class="blood-cell cell2"></div>
-      <div class="blood-cell cell3"></div>
-      <div class="blood-cell cell4"></div>
-      <div class="blood-cell cell5"></div>
-      <div class="blood-cell cell6"></div>
+    <!-- Left Welcome Section -->
+    <div class="left-section">
+        <div class="blood-cells">
+            <div class="blood-cell cell1"></div>
+            <div class="blood-cell cell2"></div>
+            <div class="blood-cell cell3"></div>
+            <div class="blood-cell cell4"></div>
+            <div class="blood-cell cell5"></div>
+            <div class="blood-cell cell6"></div>
+        </div>
+        <h1>Welcome to LifeLink</h1>
+        <p>Connecting patients with life-saving blood donors instantly. Quick, reliable, and community-driven platform
+            to save lives.</p>
     </div>
-    <h1>Welcome to LifeLink</h1>
-    <p>Connecting patients with life-saving blood donors instantly. Quick, reliable, and community-driven platform to save lives.</p>
-  </div>
 
-  <!-- Right Section -->
-  <div class="right-section">
-    <div class="login-box">
-      <!-- Login Form -->
-      <div id="login" class="form-container active">
-        <h2>User Login</h2>
-        <form>
-          <div class="input-group">
-            <input type="email" name ="email" placeholder="Email Address" required>
-          </div>
-          <div class="input-group">
-            <input type="password" name="password" placeholder="Password" required>
-          </div>
-          <button type="submit" class="btn">Login</button>
-        </form>
-        <div class="extra-links">
-          <a onclick="showForm('signup')">Sign Up</a> |
-          <a onclick="showForm('forgot')">Forgot Password?</a>
-        </div>
-        <button class="google-btn">
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo">
-          Login with Google
-        </button>
-      </div>
+    <!-- Right Section -->
+    <div class="right-section">
+        <div class="login-box">
+            <!-- Login Form -->
+            <div id="login" class="form-container active">
+                <h2>User Login</h2>
+                <form action="{{ url_for('login') }}" method="POST">
+                    <div class="input-group">
+                        <input type="email" name="email" placeholder="Email Address" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" name="password" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="btn">Login</button>
+                </form>
+                <div class="extra-links">
+                    <a onclick="showForm('signup')">Sign Up</a> |
+                    <a onclick="showForm('forgot')">Forgot Password?</a>
+                </div>
+                <button class="google-btn">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo">
+                    Login with Google
+                </button>
+            </div>
 
-      <!-- Signup Form -->
-      <div id="signup" class="form-container">
-        <h2>Create Account</h2>
-        <form>
-          <div class="input-group">
-            <input type="text" name = "name" id = "name" placeholder="Full Name" required>
-          </div>
-          <div class="input-group">
-            <input type="email" name = "email" id = "email" placeholder="Email Address" required>
-          </div>
-          <div class="input-group">
-            <input type="password" name = "password" id = "password" placeholder="Password" required>
-          </div>
-          <button type="submit" class="btn">Sign Up</button>
-        </form>
-        <div class="extra-links">
-          <a onclick="showForm('login')">Back to Login</a>
-        </div>
-      </div>
+            <!-- Signup Form -->
+            <div id="signup" class="form-container">
+                <h2>Create Account</h2>
+                <form action="{{ url_for('signup') }}" method="POST">
+                    <div class="input-group">
+                        <input type="text" name="name" placeholder="Full Name" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="email" name="email" placeholder="Email Address" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" name="password" placeholder="Password" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" name="Address" placeholder="Address" required>
+                    </div>
+                    <div class="input-group">
+                        <select name="blood_grp" required>
+                            <option value="" disabled selected>Select Blood Group</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <input type="number" name="age" placeholder="Age" required>
+                    </div>
+                    <div class="input-group">
+                        <select name="gender" required>
+                            <option value="" disabled selected>Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" name="live_loc" placeholder="Current Location" required>
+                    </div>
+                    <button type="submit" class="btn">Sign Up</button>
+                </form>
+                <div class="extra-links">
+                    <a onclick="showForm('login')">Back to Login</a>
+                </div>
+            </div>
 
-      <!-- Forgot Password Form -->
-      <div id="forgot" class="form-container">
-        <h2>Reset Password</h2>
-        <form>
-          <div class="input-group">
-            <input type="email" placeholder="Enter your email" required>
-          </div>
-          <button type="submit" class="btn">Send Reset Link</button>
-        </form>
-        <div class="extra-links">
-          <a onclick="showForm('login')">Back to Login</a>
+            <!-- Forgot Password Form -->
+            <div id="forgot" class="form-container">
+                <h2>Reset Password</h2>
+                <form>
+                    <div class="input-group">
+                        <input type="email" placeholder="Enter your email" required>
+                    </div>
+                    <button type="submit" class="btn">Send Reset Link</button>
+                </form>
+                <div class="extra-links">
+                    <a onclick="showForm('login')">Back to Login</a>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 
-  <script>
-    function showForm(formId) {
-      document.querySelectorAll('.form-container').forEach(form => {
-        form.classList.remove('active');
-      });
-      document.getElementById(formId).classList.add('active');
-    }
-  </script>
+    <script>
+        function showForm(formId) {
+            document.querySelectorAll('.form-container').forEach(form => {
+                form.classList.remove('active');
+            });
+            document.getElementById(formId).classList.add('active');
+        }
+    </script>
 </body>
+
 </html>
