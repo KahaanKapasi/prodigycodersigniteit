@@ -145,13 +145,14 @@ def sosrequest():
     # --- Function 2: Send WhatsApp SOS ---
     try:
         account_sid = "ACdfb7ba0f1f74a1162f9a1383f566d001"
-        auth_token = "1ad547d8633376ab99e1706a663e9bb4"
+        auth_token = "1197041287f1d9ab0ebce4828822e655"
         client = Client(account_sid, auth_token)
 
         msg_text = f"🚨 SOS Alert: {user.blood_grp} blood needed!\n" \
-                   f"Patient: {user.name}, Age {user.age}\n" \
-                   f"Location: {user.live_loc}\n" \
-                   f"Reply YES if you can donate."
+           f"Patient: {user.name}, Age {user.age}\n" \
+           f"Location: {user.live_loc}\n" \
+           f"http://127.0.0.1:8000/accept/{new_req.req_id}"
+
 
         message = client.messages.create(
             body=msg_text,
@@ -179,4 +180,4 @@ def logout():
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
-    app.run(debug=True)
+    app.run(debug=True, port = 8000)
