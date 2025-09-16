@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Blood Donation - Save Lives</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff;
+      color: #333;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Navigation Bar */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #dc2626;
+      color: #fff;
+      padding: 1rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    nav .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    nav .menu {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      position: relative;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      transition: opacity 0.2s;
+    }
+
+    nav a:hover {
+      opacity: 0.8;
+    }
+
+    /* Notification Bell */
+    .bell {
+      position: relative; /* anchor notifications */
+      cursor: pointer;
+      font-size: 1.5rem;
+    }
+
+    .badge {
+      position: absolute;
+      top: -6px;
+      right: -10px;
+      background: yellow;
+      color: #dc2626;
+      font-size: 0.8rem;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 50%;
+    }
+
+    /* Notification Panel */
+    .notifications {
+      position: absolute;
+      top: 120%; /* below the bell */
+      right: 0;
+      width: 320px;
+      max-height: 0;
+      overflow: hidden;
+      background: #fff5f5;
+      border: 2px solid #dc2626;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transition: max-height 0.4s ease;
+      z-index: 1500;
+    }
+
+    .notifications.active {
+      max-height: 400px; /* expand panel */
+    }
+
+    .notifications h2 {
+      text-align: center;
+      color: #dc2626;
+      padding: 0.5rem;
+      font-size: 1.2rem;
+    }
+
+    .notif-controls {
+      display: flex;
+      justify-content: flex-end;
+      padding: 0.5rem 1rem;
+    }
+
+    .notif-controls button {
+      background: #dc2626;
+      color: white;
+      border: none;
+      padding: 0.3rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: background 0.3s;
+    }
+
+    .notif-controls button:hover {
+      background: #991b1b;
+    }
+
+    .notif-list {
+      max-height: 300px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      padding: 0.5rem 1rem 1rem;
+    }
+
+    .notif {
+      background: #fff;
+      border: 2px solid #dc2626;
+      border-radius: 12px;
+      padding: 0.8rem;
+      font-size: 0.9rem;
+      color: #b91c1c;
+    }
+
+    .notif-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .notif-actions button {
+      flex: 1;
+      padding: 0.4rem 0.6rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .accept-btn {
+      background: #22c55e;
+      color: #fff;
+    }
+
+    .accept-btn:hover { background: #16a34a; }
+
+    .decline-btn {
+      background: #dc2626;
+      color: #fff;
+    }
+
+    .decline-btn:hover { background: #b91c1c; }
+
+    /* Floating blood cells */
+    .blood-cell {
+      position: absolute;
+      background: rgba(220, 38, 38, 0.7);
+      border-radius: 50%;
+      animation: float infinite ease-in-out;
+      z-index: 0;
+    }
+
+    @keyframes float {
+      0%   { transform: translateY(0) scale(1); opacity: 0.7; }
+      50%  { transform: translateY(-60px) scale(1.2); opacity: 1; }
+      100% { transform: translateY(0) scale(1); opacity: 0.7; }
+    }
+
+    /* Hero */
+    header {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+      z-index: 1;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      color: #dc2626;
+      margin-bottom: 1rem;
+      animation: fadeInDown 1s ease forwards;
+    }
+
+    header p {
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin-bottom: 1.5rem;
+      color: #555;
+      animation: fadeInUp 1.2s ease forwards;
+    }
+
+    header .emergency {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #b91c1c;
+      margin-bottom: 1rem;
+    }
+
+    header button {
+      background: #dc2626;
+      color: #fff;
+      padding: 1rem 2.5rem;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transition: background 0.3s ease, transform 0.2s ease;
+      animation: fadeIn 1.4s ease forwards;
+    }
+
+    header button:hover {
+      background: #b91c1c;
+      transform: scale(1.05);
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Info Section */
+    .info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      padding: 3rem 1.5rem;
+      background: #fef2f2;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+
+    .card h3 {
+      color: #dc2626;
+      margin-bottom: 1rem;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      background: #dc2626;
+      color: #fff;
+      position: relative;
+      z-index: 1;
+    }
+    #profileForm input, 
+    #profileForm select {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0;
+      border: 1px solid #dc2626;
+      border-radius: 5px;
+    }
+    #editBtn {
+      background: #dc2626;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      width: 100%;
+      cursor: pointer;
+    }
+    .profile-panel {
+  position: absolute;
+  top: 120%; /* below logo or profile icon */
+  right: 0;
+  width: 350px;
+  max-height: 0;
+  overflow: hidden;
+  background: #fff5f5;
+  border: 2px solid #dc2626;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transition: max-height 0.4s ease;
+  z-index: 2000;
+}
+
+.profile-panel.active {
+  max-height: 500px; /* expand smoothly */
+}
+
+.profile-panel h2 {
+  text-align: center;
+  color: #dc2626;
+  padding: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.profile-panel form {
+  padding: 0.5rem 1rem 1rem;
+}
+
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="logo">
+  <img src="Screenshot 2025-09-16 202217.png" alt="RaktDaan Logo" style="height: 60px; border-radius:10px;">
+</div>
+    <div class="menu">
+      <a href="#">Home</a>
+      <a href="#">Rewards </a>
+      <a href="#">About Us</a>
+
+
+      <!-- Bell with notifications inside -->
+      <div class="bell" id="bell">
+        <img src="white-notification-bell-icon-transparent-background-701751695033958n33jtfuju8-removebg-preview.png" height="33px" alt="">
+        <span class="badge" id="badge">3</span>
+
+        <div class="notifications" id="notifications">
+          <h2>Notifications</h2>
+          <div class="notif-controls">
+            <button id="closePanel">X</button>
+          </div>
+          
+        <div class="notif-list" id="notifList">
+            <div class="notif"></div>
+            <div class="notif">
+                      🚨 Emergency: Blood type O- needed urgently at City Hospital.
+              <div class="notif-actions">
+                <button class="accept-btn">Accept</button>
+                <button class="decline-btn">Decline</button>
+              </div>
+            </div>
+            <div class="notif">
+              🏥 Blood drive tomorrow at Central Park, join us!
+              <div class="notif-actions">
+                <button class="accept-btn">Accept</button>
+                <button class="decline-btn">Decline</button>
+              </div>
+            </div>
+            <div class="notif">
+              💉 You saved 3 lives with your last donation. Thank you!
+              <div class="notif-actions">
+                <button class="accept-btn">Accept</button>
+                <button class="decline-btn">Decline</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="profileBtn" style="cursor:pointer;">
+      <img src="0e53973045af09690a585416fba9394c.jpg" height="35px" style="border-radius:50%; border:2px solid white;">
+    </div>
+    <!-- Profile Panel -->
+<div class="panel" id="profilePanel" 
+     style="display:none; position:absolute; top:70px; right:20px; background:white; 
+            border:2px solid #dc2626; border-radius:12px; padding:1rem; width:320px;
+            box-shadow:0 6px 15px rgba(0,0,0,0.2); z-index:2000;">
+  <h2 style="color:#dc2626; text-align:center;">Profile</h2>
+  <button id="closeProfile" 
+          style="position:absolute; top:8px; right:8px; background:#dc2626; color:white; border:none; 
+                 border-radius:50%; width:25px; height:25px; cursor:pointer;">X</button>
+  
+  <div style="text-align:center; margin: 1rem 0;">
+    <label for="profilePic">
+      <img id="profileImage" src="0e53973045af09690a585416fba9394c.jpg" alt="Profile" 
+           style="width:100px;height:100px;border-radius:50%;border:3px solid #dc2626;cursor:pointer;">
+    </label>
+    <input type="file" id="profilePic" accept="image/*" style="display:none;">
+  </div>
+  
+  <form id="profileForm">
+    <input type="text" id="fullName" value="John Doe" readonly>
+    <input type="email" id="email" value="johndoe@example.com" readonly>
+    <div style="display:flex; gap:0.5rem;">
+      <input type="text" id="phone" value="9876543210" readonly style="flex:1;">
+      <select id="bloodGroup" disabled style="flex:1;">
+        <option>O+</option><option>O-</option>
+        <option selected>A+</option><option>A-</option>
+        <option>B+</option><option>B-</option>
+        <option>AB+</option><option>AB-</option>
+      </select>
+    </div>
+    <select id="gender" disabled>
+      <option selected>Male</option><option>Female</option><option>Other</option>
+    </select>
+    <input type="text" id="location" value="123 MG Road, Mumbai, India" readonly>
+    <select id="diseases" disabled>
+      <option selected>No</option><option>Yes</option>
+    </select>
+    <button type="button" id="editBtn">Update</button>
+  </form>
+</div>
+    </div>
+
+  </nav>
+
+    
+  <!-- Floating Blood Cells -->
+  <div id="blood-bg"></div>
+
+  <!-- Hero Section -->
+  <header>
+    <h1>Hey {{user.name}}! Welcome to RaktDaan</h1>
+    <h1>Donate Blood, Save Lives</h1>
+    <p>Every drop counts. Join our mission to give the gift of life and help those in need.</p>
+    <p class="emergency">🚨 Emergency Blood Needed?</p>
+<a href="{{ url_for('sosrequest') }}">
+    <button class="btn btn-danger">🚨 Send SOS Request</button>
+</a>
+  </header>
+
+  <!-- Info Section -->
+  <section class="info">
+    <div class="card">
+      <h3>Why Donate?</h3>
+      <p>Blood donation can save up to three lives with just one unit.</p>
+    </div>
+    <div class="card">
+      <h3>Who Benefits?</h3>
+      <p>Accident victims, cancer patients, and many others rely on donors.</p>
+    </div>
+    <div class="card">
+      <h3>Get Involved</h3>
+      <p>Join our community drives and make a lasting impact.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>©️ 2025 RaktDaan. All rights reserved.</p>
+  </footer>
+
+  <script>
+    const container = document.getElementById('blood-bg');
+    for (let i = 0; i < 25; i++) {
+      const cell = document.createElement('div');
+      cell.classList.add('blood-cell');
+      const size = 15 + Math.random() * 20;
+      cell.style.width = size + 'px';
+      cell.style.height = size + 'px';
+      cell.style.top = Math.random() * 100 + 'vh';
+      cell.style.left = Math.random() * 100 + 'vw';
+      cell.style.animationDuration = (5 + Math.random() * 5) + 's';
+      cell.style.animationDelay = Math.random() * 5 + 's';
+      container.appendChild(cell);
+    }
+
+    // Notifications logic
+    const bell = document.getElementById("bell");
+    const panel = document.getElementById("notifications");
+    const badge = document.getElementById("badge");
+    const closePanel = document.getElementById("closePanel");
+    const notifList = document.getElementById("notifList");
+
+    function updateBadge() {
+      const remaining = notifList.querySelectorAll(".notif").length;
+      badge.textContent = remaining;
+      if (remaining === 0) badge.style.display = "none";
+    }
+
+    bell.addEventListener("click", (e) => {
+      e.stopPropagation();
+      panel.classList.toggle("active");
+    });
+
+    closePanel.addEventListener("click", (e) => {
+      e.stopPropagation();
+      panel.classList.remove("active");
+    });
+
+    notifList.addEventListener("click", (e) => {
+      if (e.target.classList.contains("accept-btn")) {
+        e.target.closest(".notif").innerHTML = "<p style='color:green;'>✅ Accepted</p>";
+        updateBadge();
+      }
+      if (e.target.classList.contains("decline-btn")) {
+        e.target.closest(".notif").innerHTML = "<p style='color:red;'>❌ Declined</p>";
+        updateBadge();
+      }
+    });
+    
+
+    
+    
+const profileBtn = document.getElementById("profileBtn");
+const profilePanel = document.getElementById("profilePanel");
+const closeProfile = document.getElementById("closeProfile");
+const editBtn = document.getElementById("editBtn");
+const inputs = document.querySelectorAll("#profileForm input, #profileForm select");
+let editable = false;
+
+profileBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+  profilePanel.style.display = profilePanel.style.display === "block" ? "none" : "block";
+});
+
+closeProfile.addEventListener("click", () => {
+  profilePanel.style.display = "none";
+});
+
+editBtn.addEventListener("click", () => {
+  editable = !editable;
+  inputs.forEach(el => {
+    if (el.tagName === "INPUT") el.readOnly = !editable;
+    if (el.tagName === "SELECT") el.disabled = !editable;
+  });
+  editBtn.textContent = editable ? "Save" : "Update";
+  
+  if (!editable) {
+    alert("✅ Profile Saved!");
+  }
+});
+
+document.getElementById("profilePic").addEventListener("change", e => {
+  const file = e.target.files[0];
+  if (file) {
+    const url = URL.createObjectURL(file);
+    document.getElementById("profileImage").src = url;
+    document.querySelector("#profileBtn img").src = url;
+  }
+});
+
+document.addEventListener("click", (e) => {
+  if (!profilePanel.contains(e.target) && !profileBtn.contains(e.target)) {
+    profilePanel.style.display = "none";
+  }
+});
+
+document.querySelector("header button").addEventListener("click", () => {
+      alert("🚨 SOS Request Sent! Our team will reach out immediately.");
+    });
+    
+  </script>
+</body>
+</html>

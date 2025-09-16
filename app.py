@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+from twilio.rest import Client
+import os
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"   # needed for sessions
@@ -41,6 +43,8 @@ class SOSRequest(db.Model):
 @app.route('/', methods=['GET','POST'])
 def index():
     return render_template('index.html')
+
+
 @app.route('/login', methods=['GET','POST'])
 def login():
     if request.method == 'POST':
@@ -70,18 +74,20 @@ def signup():
     gender = request.form['gender']
     live_loc = request.form['live_loc']
     phone = request.form['phone']
-
     if User.query.filter_by(email=email).first():
         flash("Email already registered!", "danger")
         return redirect(url_for('login'))
-
-    new_user = User(name=name, email=email, password=password,
-                    Address=Address, blood_grp=blood_grp,
-                    age=age, gender=gender, live_loc=live_loc , phone=phone)
+    new_user = User(
+        name=name, email=email, password=password,
+        Address=Address, blood_grp=blood_grp,
+        age=age, gender=gender, live_loc=live_loc, phone=phone
+    )
     db.session.add(new_user)
     db.session.commit()
-    flash("Signup successful! Please login.", "success")
+    session['user_id'] = new_user.id
+    flash("Signup successful! Welcome!", "success")
     return redirect(url_for('home'))
+
 
 @app.route('/home')
 def home():
@@ -89,7 +95,53 @@ def home():
         flash("Please login first!", "warning")
         return redirect(url_for('login'))
     user = User.query.get(session['user_id'])
-    return f"Welcome {user.name}! Your blood group is {user.blood_grp}. You live in {user.live_loc}. You are {user.age} years old and you are a {user.gender}. You live at {user.Address}.Your User ID is {user.id}. Your phone number is {user.phone}."
+    return render_template('home.html', user=user)
+
+
+@app.route('/sosrequest')
+def sosrequest():
+    if 'user_id' not in session:
+        flash("Please login first!", "warning")
+        return redirect(url_for('login'))
+
+    user = User.query.get(session['user_id'])
+
+    # --- Function 1: Create SOS request ---
+    new_req = SOSRequest(
+        user_id=user.id,
+        required_blood=user.blood_grp,
+        status="Pending"
+    )
+    db.session.add(new_req)
+    db.session.commit()
+
+    # --- Function 2: Send WhatsApp SOS ---
+    try:
+        account_sid = "ACdfb7ba0f1f74a1162f9a1383f566d001"
+        auth_token = "1ad547d8633376ab99e1706a663e9bb4"
+        client = Client(account_sid, auth_token)
+
+        msg_text = f"🚨 SOS Alert: {user.blood_grp} blood needed!\n" \
+                   f"Patient: {user.name}, Age {user.age}\n" \
+                   f"Location: {user.live_loc}\n" \
+                   f"Reply YES if you can donate."
+
+        message = client.messages.create(
+            body=msg_text,
+            from_="whatsapp:+14155238886",   # Twilio sandbox number
+            to="whatsapp:+917045001010"      # Replace with actual verified number
+        )
+        flash("SOS request sent via WhatsApp!", "success")
+
+    except Exception as e:
+        flash(f"Failed to send WhatsApp message: {str(e)}", "danger")
+
+    # --- Function 3: Render confirmation page ---
+    return render_template('sosrequest.html', user=user, request=new_req)
+
+
+
+
 
 @app.route('/logout')
 def logout():

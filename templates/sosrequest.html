@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SOS Request</title>
+</head>
+<body>
+  <h1>🚨 SOS Request Sent</h1>
+  <p>Hello {{ user.name }}, your SOS request has been created.</p>
+  <p>Blood Group Required: <strong>{{ request.required_blood }}</strong></p>
+  <p>Status: <strong>{{ request.status }}</strong></p>
+
+  <a href="{{ url_for('home') }}">⬅ Back to Dashboard</a>
+</body>
+</html>
