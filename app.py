@@ -88,6 +88,33 @@ def signup():
     flash("Signup successful! Welcome!", "success")
     return redirect(url_for('home'))
 
+#----------
+# Accept page route
+@app.route('/accept/<int:req_id>')
+def accept(req_id):
+    if 'user_id' not in session:
+        flash("Please login first!", "warning")
+        return redirect(url_for('login'))
+
+    req = SOSRequest.query.get_or_404(req_id)
+    patient = User.query.get(req.user_id)
+
+    # Example: find all donors with matching blood group
+    donors = User.query.filter(
+        User.blood_grp == req.required_blood,
+        User.id != patient.id
+    ).all()
+
+    # Get hospitals (later you can filter by distance)
+    hospitals = Hospital.query.all()
+
+    return render_template(
+        'accept.html',
+        patient=patient,
+        donors=donors,
+        hospitals=hospitals
+    )
+#----------
 
 @app.route('/home')
 def home():

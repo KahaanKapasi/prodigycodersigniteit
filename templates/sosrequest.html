@@ -2,14 +2,179 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>SOS Request</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donation Status</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #B22222;
+      --primary-gradient: linear-gradient(135deg, #b22222, #d90429);
+      --background-light: #f7f7f7;
+      --card-background: #ffffff;
+      --text-dark: #333;
+      --text-muted: #666;
+      --status-pending: #f0ad4e;
+      --status-completed: #5cb85c;
+      --status-cancelled: #d9534f;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--background-light);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .status-container {
+      background: var(--card-background);
+      border-radius: 16px;
+      padding: 40px 30px;
+      width: 100%;
+      max-width: 460px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+      text-align: center;
+      animation: fadeIn 1.2s ease;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .status-container:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.2);
+    }
+
+    .status-header {
+      margin-bottom: 30px;
+      padding: 20px;
+      border-radius: 12px;
+      background: var(--primary-gradient);
+      color: white;
+      animation: slideDown 1s ease;
+    }
+
+    .status-header h2 {
+      font-weight: 700;
+      font-size: 2rem;
+      margin: 0;
+    }
+
+    .status-header p {
+      font-size: 1rem;
+      margin-top: 6px;
+      color: #f0f0f0;
+    }
+
+    .info-group {
+      margin-bottom: 22px;
+      text-align: left;
+      animation: slideUp 0.8s ease forwards;
+      opacity: 0;
+    }
+
+    .info-group:nth-child(2) { animation-delay: 0.2s; }
+    .info-group:nth-child(3) { animation-delay: 0.4s; }
+    .info-group:nth-child(4) { animation-delay: 0.6s; }
+
+    .info-group label {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+      color: var(--text-dark);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .info-group label i {
+      margin-right: 8px;
+      color: var(--primary-color);
+    }
+
+    .info-group .info-text {
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: var(--text-dark);
+      padding: 12px 15px;
+      background-color: #f4f4f4;
+      border-radius: 8px;
+    }
+
+    .status-label {
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding: 10px 18px;
+      border-radius: 25px;
+      display: inline-block;
+    }
+
+    .status-label.pending {
+      background-color: var(--status-pending);
+      color: white;
+    }
+
+    .status-label.completed {
+      background-color: var(--status-completed);
+      color: white;
+    }
+
+    .status-label.cancelled {
+      background-color: var(--status-cancelled);
+      color: white;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Responsive */
+    @media (max-width: 500px) {
+      .status-container {
+        padding: 30px 20px;
+      }
+      .status-header h2 {
+        font-size: 1.6rem;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-  <h1>🚨 SOS Request Sent</h1>
-  <p>Hello {{ user.name }}, your SOS request has been created.</p>
-  <p>Blood Group Required: <strong>{{ request.required_blood }}</strong></p>
-  <p>Status: <strong>{{ request.status }}</strong></p>
+  <div class="status-container">
+    <div class="status-header">
+      <h2>Donation Details</h2>
+      <br>
+      <p>Here is the current status of your donation.</p>
+    </div>
+    
+    <div class="info-group">
+      <label><i class="fas fa-hashtag"></i> Donation ID</label>
+            <br>
+      <span class="info-text">DON-1234567</span>
+    </div>
 
-  <a href="{{ url_for('home') }}">⬅ Back to Dashboard</a>
+    <div class="info-group">
+      <label><i class="fas fa-user"></i> Recipient Name</label>      <br>
+      <span class="info-text">Charity for Hope</span>
+    </div>
+
+    <div class="info-group">
+      <label><i class="fas fa-heart"></i> Current Status</label>      <br>
+      <span class="status-label completed">Completed</span>
+    </div>
+  </div>
 </body>
 </html>

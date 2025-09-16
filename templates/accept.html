@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Accept SOS Request</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    body { margin:0; font-family: Arial, sans-serif; }
+    #map { height: 90vh; width: 100%; }
+    h2 { text-align:center; padding:10px; color:#e53935; }
+  </style>
+</head>
+<body>
+  <h2>🚑 SOS Request Accepted - Live Map</h2>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    // Initialize map centered on patient
+    var patientLoc = "{{ patient.live_loc }}".split(",");
+    var map = L.map('map').setView([parseFloat(patientLoc[0]), parseFloat(patientLoc[1])], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Patient marker
+    L.marker([parseFloat(patientLoc[0]), parseFloat(patientLoc[1])], {
+      title: "Patient"
+    }).addTo(map).bindPopup("<b>🚨 Patient: {{ patient.name }}</b><br>Blood: {{ patient.blood_grp }}");
+
+    // Donors
+    {% for donor in donors %}
+      var dloc = "{{ donor.live_loc }}".split(",");
+      L.marker([parseFloat(dloc[0]), parseFloat(dloc[1])], {icon: L.icon({iconUrl:'https://maps.gstatic.com/mapfiles/ms2/micons/blue-dot.png'})})
+        .addTo(map)
+        .bindPopup("<b>Donor: {{ donor.name }}</b><br>Blood: {{ donor.blood_grp }}<br>📞 {{ donor.phone }}");
+    {% endfor %}
+
+    // Hospitals
+    {% for hospital in hospitals %}
+      var hloc = "{{ hospital.h_address }}".split(",");
+      if (hloc.length == 2) {
+        L.marker([parseFloat(hloc[0]), parseFloat(hloc[1])], {icon: L.icon({iconUrl:'https://maps.gstatic.com/mapfiles/ms2/micons/green-dot.png'})})
+          .addTo(map)
+          .bindPopup("<b>🏥 {{ hospital.h_name }}</b><br>📞 {{ hospital.h_contact_no }}");
+      }
+    {% endfor %}
+  </script>
+</body>
+</html>

@@ -329,7 +329,7 @@
                     <div class="input-group">
                         <input type="email" name="email" placeholder="Email Address" required>
                     </div>
-                    <div class ="input-group">
+                    <div class="input-group">
                         <input type="text" name="phone" placeholder="Phone Number" required>
                     </div>
                     <div class="input-group">
@@ -363,8 +363,31 @@
                         </select>
                     </div>
                     <div class="input-group">
-                        <input type="text" name="live_loc" placeholder="Current Location" required>
+                        <input type="text" id="live_loc" name="live_loc" placeholder="Fetching location..." required
+                            readonly>
                     </div>
+
+                    <script>
+                        // Auto-fill Current Location on signup
+                        window.addEventListener("load", () => {
+                            if (navigator.geolocation) {
+                                navigator.geolocation.getCurrentPosition(
+                                    (pos) => {
+                                        let lat = pos.coords.latitude.toFixed(6);
+                                        let lon = pos.coords.longitude.toFixed(6);
+                                        document.getElementById("live_loc").value = lat + "," + lon;
+                                    },
+                                    (err) => {
+                                        console.warn("Location access denied or unavailable:", err.message);
+                                        document.getElementById("live_loc").placeholder = "Unable to fetch location";
+                                    }
+                                );
+                            } else {
+                                document.getElementById("live_loc").placeholder = "Geolocation not supported";
+                            }
+                        });
+                    </script>
+
                     <button type="submit" class="btn">Sign Up</button>
                 </form>
                 <div class="extra-links">
