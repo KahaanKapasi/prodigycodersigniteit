@@ -32,4 +32,4 @@ def verify_medical_report(pdf_path):
     response = model.generate_content(prompt)
     result = response.text.strip().upper()
 
-    return result == 1
+    return result == "YES"
