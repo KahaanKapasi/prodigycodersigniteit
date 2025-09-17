@@ -187,6 +187,7 @@ def sosrequest():
         msg_text = f"🚨 SOS Alert: {user.blood_grp} blood needed!\n" \
            f"Patient Age : {user.age}\n" \
            f"Location: {user.live_loc}\n" \
+           f"Click the below link to accept the donation request \n" \
            f"https://prodigycodersigniteit-1.onrender.com/accept/{new_req.req_id}"
 
 
