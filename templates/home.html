@@ -341,7 +341,7 @@
   <!-- Navigation -->
   <nav>
     <div class="logo">
-  <img src="Screenshot 2025-09-16 202217.png" alt="RaktDaan Logo" style="height: 60px; border-radius:10px;">
+<img src="{{ url_for('static', filename='raktdaanmain.png') }}" alt="RaktDaan Logo" style="height:60px; border-radius:10px;">
 </div>
     <div class="menu">
       <a href="#">Home</a>
@@ -351,8 +351,8 @@
 
       <!-- Bell with notifications inside -->
       <div class="bell" id="bell">
-        <img src="white-notification-bell-icon-transparent-background-701751695033958n33jtfuju8-removebg-preview.png" height="33px" alt="">
-        <span class="badge" id="badge">3</span>
+<img src="{{ url_for('static', filename='noti.png') }}" height="33px" alt="">
+        <span class="badge" id="badge" >3</span>
 
         <div class="notifications" id="notifications">
           <h2>Notifications</h2>
@@ -387,7 +387,7 @@
         </div>
       </div>
       <div id="profileBtn" style="cursor:pointer;">
-      <img src="0e53973045af09690a585416fba9394c.jpg" height="35px" style="border-radius:50%; border:2px solid white;">
+      <img src="{{ url_for('static', filename='prof.jpg') }}.jpg" height="35px" style="border-radius:50%; border:2px solid white;">
     </div>
     <!-- Profile Panel -->
 <div class="panel" id="profilePanel" 
@@ -444,7 +444,7 @@
     <p>Every drop counts. Join our mission to give the gift of life and help those in need.</p>
     <p class="emergency">🚨 Emergency Blood Needed?</p>
 <a href="{{ url_for('sosrequest') }}">
-    <button class="btn btn-danger">🚨 Send SOS Request</button>
+    <button class="btn btn-danger">🚨 Send SOS Request </button>
 </a>
   </header>
 

@@ -3,12 +3,19 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from twilio.rest import Client
 import os
+from verify_report import verify_medical_report
+from werkzeug.utils import secure_filename
+
+
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"   # needed for sessions
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///data.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+UPLOAD_FOLDER = "uploads"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 # MODELS
 class User(db.Model):
@@ -22,6 +29,8 @@ class User(db.Model):
     gender = db.Column(db.String(20), nullable=False)
     live_loc = db.Column(db.String(200), nullable=False)
     phone = db.Column(db.String(15), nullable=True)
+    verified = db.Column(db.Boolean, default=False)   # ✅ NEW FIELD
+
 
     def __repr__(self) -> str:
         return f"{self.name} - {self.blood_grp} - {self.live_loc}"
@@ -74,19 +83,46 @@ def signup():
     gender = request.form['gender']
     live_loc = request.form['live_loc']
     phone = request.form['phone']
+
+    # --- handle duplicate email ---
     if User.query.filter_by(email=email).first():
         flash("Email already registered!", "danger")
         return redirect(url_for('login'))
+
+    # --- handle file upload ---
+    file = request.files.get("report")
+    verified_status = False
+    if file and file.filename != "":
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+        file.save(filepath)
+        try:
+            verified_status = verify_medical_report(filepath)
+        except Exception as e:
+            flash(f"Report verification failed: {str(e)}", "danger")
+
+    # --- create new user ---
     new_user = User(
         name=name, email=email, password=password,
         Address=Address, blood_grp=blood_grp,
-        age=age, gender=gender, live_loc=live_loc, phone=phone
+        age=age, gender=gender, live_loc=live_loc,
+        phone=phone, verified=verified_status
     )
+
     db.session.add(new_user)
     db.session.commit()
     session['user_id'] = new_user.id
-    flash("Signup successful! Welcome!", "success")
+
+    if verified_status:
+        verified=1
+        db.session.commit()
+        flash("Signup successful ✅ and report verified!", "success")
+    else:
+        verified=0
+        db.session.commit()
+        flash("Signup successful! Please upload a valid medical report to verify eligibility.", "info")
     return redirect(url_for('home'))
+
 
 #----------
 # Accept page route
@@ -149,9 +185,9 @@ def sosrequest():
         client = Client(account_sid, auth_token)
 
         msg_text = f"🚨 SOS Alert: {user.blood_grp} blood needed!\n" \
-           f"Patient: {user.name}, Age {user.age}\n" \
+           f"Patient Age : {user.age}\n" \
            f"Location: {user.live_loc}\n" \
-           f"https://prodigycodersigniteit-1.onrender.com//accept/{new_req.req_id}"
+           f"https://prodigycodersigniteit-1.onrender.com/accept/{new_req.req_id}"
 
 
         message = client.messages.create(
@@ -169,6 +205,44 @@ def sosrequest():
 
 
 
+@app.route("/upload_report", methods=["GET", "POST"])
+def upload_report():
+    if "user_id" not in session:
+        flash("Please login first!", "warning")
+        return redirect(url_for("login"))
+
+    user = User.query.get(session["user_id"])
+
+    if request.method == "POST":
+        if "report" not in request.files:
+            flash("No file uploaded!", "danger")
+            return redirect(request.url)
+
+        file = request.files["report"]
+        if file.filename == "":
+            flash("No selected file!", "danger")
+            return redirect(request.url)
+
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+        file.save(filepath)
+
+        # Call Gemini check
+        is_verified = verify_medical_report(filepath)
+
+        user.verified = is_verified
+        db.session.commit()
+
+        if is_verified:
+            User.verified = 1
+            db.session.commit()
+        else:
+            User.verified = 0
+            db.session.commit()
+
+        return redirect(url_for("home"))
+
+    return render_template("upload_report.html", user=user)
 
 
 @app.route('/logout')
@@ -177,7 +251,20 @@ def logout():
     flash("Logged out successfully!", "info")
     return redirect(url_for('login'))
 
+
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
+                # Check if Cooper Hospital already exists
+        existing = Hospital.query.filter_by(h_email="admin@cooper.com").first()
+        if not existing:
+            cooper = Hospital(
+                h_name="Cooper Hospital",
+                h_address="19.1077627,72.7543643",
+                h_contact_no="912266362000",
+                h_email="admin@cooper.com"
+            )
+            db.session.add(cooper)
+            db.session.commit()
+
     app.run(debug=True, port = 8000)

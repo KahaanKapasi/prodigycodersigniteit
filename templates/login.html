@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LifeLink - Login</title>
+    <title>RaktDaan - Login</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -289,7 +289,7 @@
             <div class="blood-cell cell5"></div>
             <div class="blood-cell cell6"></div>
         </div>
-        <h1>Welcome to LifeLink</h1>
+        <h1>Welcome to RaktDaan</h1>
         <p>Connecting patients with life-saving blood donors instantly. Quick, reliable, and community-driven platform
             to save lives.</p>
     </div>
@@ -322,7 +322,7 @@
             <!-- Signup Form -->
             <div id="signup" class="form-container">
                 <h2>Create Account</h2>
-                <form action="{{ url_for('signup') }}" method="POST">
+                <form action="{{ url_for('signup') }}" method="POST" enctype="multipart/form-data">
                     <div class="input-group">
                         <input type="text" name="name" placeholder="Full Name" required>
                     </div>
@@ -362,6 +362,10 @@
                             <option value="Other">Other</option>
                         </select>
                     </div>
+                    <div class="input-group">
+                        <input type="file" name="report" accept="application/pdf" placeholder="Upload Medical Report">
+                    </div>
+
                     <div class="input-group">
                         <input type="text" id="live_loc" name="live_loc" placeholder="Fetching location..." required
                             readonly>

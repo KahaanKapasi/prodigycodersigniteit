@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blood Donation Eligibility</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #B22222;
+      --primary-gradient: linear-gradient(135deg, #b22222, #d90429);
+      --background-light: #f7f7f7;
+      --card-background: #ffffff;
+      --text-dark: #333;
+      --text-muted: #666;
+      --eligible: #28a745;
+      --not-eligible: #dc3545;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #fff, #ffecec);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .verify-container {
+      background: var(--card-background);
+      border-radius: 20px;
+      padding: 40px 30px;
+      width: 100%;
+      max-width: 560px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      animation: fadeIn 1.2s ease;
+    }
+
+    .verify-header {
+      margin-bottom: 30px;
+      padding: 20px;
+      border-radius: 14px;
+      background: var(--primary-gradient);
+      color: white;
+      animation: slideDown 1s ease;
+    }
+
+    .verify-header h2 {
+      font-weight: 700;
+      font-size: 2.2rem;
+      margin: 0;
+    }
+
+    .verify-header p {
+      font-size: 1rem;
+      margin-top: 6px;
+      color: #f0f0f0;
+    }
+
+    .info-group {
+      margin-bottom: 18px;
+      text-align: left;
+    }
+
+    .info-group label {
+      margin-bottom: 6px;
+      color: var(--text-dark);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .info-group .info-text {
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--text-dark);
+      padding: 12px 15px;
+      background-color: #f4f4f4;
+      border-radius: 8px;
+      display: block;
+    }
+
+    .eligibility-status {
+      margin-top: 25px;
+      padding: 15px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: white;
+      animation: pulse 1.5s infinite;
+    }
+
+    .eligibility-status.eligible {
+      background-color: var(--eligible);
+    }
+
+    .eligibility-status.not-eligible {
+      background-color: var(--not-eligible);
+    }
+
+    .reason {
+      margin-top: 15px;
+      font-size: 1rem;
+      color: var(--text-dark);
+      font-weight: 500;
+    }
+
+    .conditions {
+      margin-top: 25px;
+      padding: 20px;
+      background: #fff8f8;
+      border-left: 6px solid var(--primary-color);
+      border-radius: 10px;
+      text-align: left;
+      animation: fadeIn 1.2s ease;
+    }
+
+    .conditions h3 {
+      margin: 0 0 12px 0;
+      color: var(--primary-color);
+      font-size: 1.2rem;
+    }
+
+    .conditions ul {
+      margin: 0;
+      padding-left: 0;
+      list-style: none;
+    }
+
+    .conditions ul li {
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      font-size: 0.95rem;
+      background: #fdfdfd;
+      transition: 0.3s ease;
+    }
+
+    .conditions ul li span.icon {
+      margin-right: 10px;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    .conditions ul li.pass {
+      border: 1.5px solid var(--eligible);
+      background: #e6f9eb;
+      color: var(--eligible);
+    }
+
+    .conditions ul li.fail {
+      border: 1.5px solid var(--not-eligible);
+      background: #fdeaea;
+      color: var(--not-eligible);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <div class="verify-container">
+    <div class="verify-header">
+      <h2>Blood Donation Eligibility</h2>
+      <p>Check if you are eligible to donate blood</p>
+    </div>
+    
+    <div class="info-group">
+      <label>Name</label>
+      <span class="info-text" id="name">Rahul Sharma</span>
+    </div>
+
+    <div class="info-group">
+      <label>Age</label>
+      <span class="info-text" id="age">24</span>
+    </div>
+
+    <div class="info-group">
+      <label>Blood Group</label>
+      <span class="info-text" id="bloodGroup">B+</span>
+    </div>
+
+    <div class="info-group">
+      <label>Last Donation Date</label>
+      <span class="info-text" id="lastDonation">2025-01-15</span>
+    </div>
+
+    <!-- Eligibility status -->
+    <div id="eligibility" class="eligibility-status">Checking...</div>
+    <div id="reason" class="reason"></div>
+
+    <!-- Conditions -->
+    <div class="conditions">
+      <h3>Eligibility Conditions</h3>
+      <ul>
+        <li id="cond-age"><span class="icon"></span> Age must be between&nbsp;  <b> 18 and 60 years</b></li>
+        <li id="cond-days"><span class="icon"></span> At least&nbsp; <b> 90 days </b> &nbsp;    should have passed since last donation</li>
+        <li id="cond-health"><span class="icon"></span> Donor must be in &nbsp; <b> good health</b></li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    function checkEligibility() {
+      const age = parseInt(document.getElementById("age").innerText);
+      const lastDonation = new Date(document.getElementById("lastDonation").innerText);
+      const today = new Date();
+      const diffDays = (today - lastDonation) / (1000 * 60 * 60 * 24);
+
+      let status = document.getElementById("eligibility");
+      let reason = document.getElementById("reason");
+
+      let condAge = document.getElementById("cond-age");
+      let condDays = document.getElementById("cond-days");
+      let condHealth = document.getElementById("cond-health");
+
+      let pass = true;
+
+      // Check Age
+      if (age >= 18 && age <= 60) {
+        condAge.classList.add("pass");
+      } else {
+        condAge.classList.add("fail");
+        pass = false;
+      }
+
+      // Check Days
+      if (diffDays >= 90) {
+        condDays.classList.add("pass");
+      } else {
+        condDays.classList.add("fail");
+        pass = false;
+      }
+
+      // Health (static pass for demo)
+      condHealth.classList.add("pass");
+
+      if (pass) {
+        status.className = "eligibility-status eligible";
+        status.innerText = " Eligible";
+        reason.innerText = "You meet all requirements to donate blood.";
+      } else {
+        status.className = "eligibility-status not-eligible";
+        status.innerText = " Not Eligible";
+        reason.innerText = "One or more conditions are not satisfied.";
+      }
+    }
+
+    window.onload = checkEligibility;
+  </script>
+</body>
+</html>
